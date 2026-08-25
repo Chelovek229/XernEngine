@@ -13,7 +13,7 @@ This guide will help you create your first game with XernEngine in under 10 minu
 1. Clone or download XernEngine:
 
 ```bash
-git clone https://github.com/your-repo/xernengine.git
+git clone https://github.com/KiG-Computer-Systems/XernEngine.git
 cd xernengine
 ```
 
