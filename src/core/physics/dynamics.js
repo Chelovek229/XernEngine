@@ -1,34 +1,51 @@
-// Динамика объектов
-export function applyGravity(obj, gravity) {
-    if (obj === null) {
-        throw new ReferenceError('applyGravity: obj is null');
+function validatePhysicsObject(obj, name = "object") {
+    if (!obj || typeof obj !== "object") {
+        throw new TypeError(`${name} must be an object`);
     }
-    if (gravity === null) {
-        throw new ReferenceError('applyGravity: gravity is null');
+
+    if (!obj.velocity ||
+        typeof obj.velocity.x !== "number" ||
+        typeof obj.velocity.y !== "number") {
+        throw new TypeError(
+            `${name}.velocity must contain x and y numbers`
+        );
     }
-    if (typeof obj.velocityY !== 'number') {
-        throw new TypeError('applyGravity: obj.velocityY is not a number');
+
+    if (
+        !Number.isFinite(obj.velocity.x) ||
+        !Number.isFinite(obj.velocity.y)
+    ) {
+        throw new RangeError(
+            `${name}.velocity contains invalid numbers`
+        );
     }
-    if (typeof gravity !== 'number') {
-        throw new TypeError('applyGravity: gravity is not a number');
-    }
-    obj.velocityY += gravity;
 }
 
+
+// Gravity
+export function applyGravity(obj, gravity) {
+    validatePhysicsObject(obj, "applyGravity obj");
+
+    if (!Number.isFinite(gravity)) {
+        throw new TypeError(
+            "applyGravity: gravity must be a finite number"
+        );
+    }
+
+    obj.velocity.y += gravity;
+}
+
+
+// Friction
 export function applyFriction(obj, friction) {
-    if (obj === null) {
-        throw new ReferenceError('applyFriction: obj is null');
+    validatePhysicsObject(obj, "applyFriction obj");
+
+    if (!Number.isFinite(friction)) {
+        throw new TypeError(
+            "applyFriction: friction must be a finite number"
+        );
     }
-    if (friction === null) {
-        throw new ReferenceError('applyFriction: friction is null');
-    }
-    if (typeof obj.velocityX !== 'number' || typeof obj.velocityY !== 'number' || typeof friction !== 'number') {
-        throw new TypeError('applyFriction: obj.velocityX, obj.velocityY, or friction is not a number');
-    }
-    try {
-        obj.velocityX *= friction;
-        obj.velocityY *= friction;
-    } catch (error) {
-        throw new Error(`applyFriction: unable to apply friction to obj: ${error.message}`);
-    }
+
+    obj.velocity.x *= friction;
+    obj.velocity.y *= friction;
 }
