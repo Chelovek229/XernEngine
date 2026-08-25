@@ -1,44 +1,60 @@
-// Менеджер динамики
 export class DynamicsManager {
     constructor() {
-        if (!this.objects) {
-            throw new Error('this.objects is null or undefined');
-        }
-        if (typeof this.objects !== 'object' || !Array.isArray(this.objects)) {
-            throw new Error('this.objects must be an array');
-        }
-        this.objects = this.objects || [];
+        this.objects = [];
     }
 
+
     addObject(obj) {
-        if (obj === null || typeof obj !== 'object') {
-            throw new TypeError('obj must be a valid object');
+        if (!obj || typeof obj !== "object") {
+            throw new TypeError(
+                "DynamicsManager: object must be an object"
+            );
         }
+
         if (this.objects.includes(obj)) {
-            throw new Error('obj is already in the list');
+            throw new Error(
+                "DynamicsManager: object already exists"
+            );
         }
+
         this.objects.push(obj);
     }
 
-    applyAllForces() {
-        try {
-            if (this.objects === null) {
-                throw new Error('this.objects is null');
+
+    removeObject(obj) {
+        const index = this.objects.indexOf(obj);
+
+        if (index === -1) {
+            throw new Error(
+                "DynamicsManager: object not found"
+            );
+        }
+
+        this.objects.splice(index, 1);
+    }
+
+
+    applyAllForces(deltaTime) {
+        for (const obj of this.objects) {
+
+            if (!obj.velocity ||
+                typeof obj.velocity.x !== "number" ||
+                typeof obj.velocity.y !== "number") {
+
+                throw new TypeError(
+                    "DynamicsManager: object has invalid velocity"
+                );
             }
-            if (typeof this.objects !== 'object' || !Array.isArray(this.objects)) {
-                throw new Error('this.objects must be an array');
+
+
+            // пример физики
+            if (obj.gravity) {
+                obj.velocity.y += obj.gravity * deltaTime;
             }
-            this.objects.forEach(obj => {
-                if (obj === null) {
-                    throw new Error('obj is null');
-                }
-                if (typeof obj !== 'object') {
-                    throw new Error('obj must be a valid object');
-                }
-                // ...логика применения сил...
-            });
-        } catch (error) {
-            console.error('Error in applyAllForces:', error);
+
+
+            obj.x += obj.velocity.x * deltaTime;
+            obj.y += obj.velocity.y * deltaTime;
         }
     }
 }
